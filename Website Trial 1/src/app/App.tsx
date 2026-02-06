@@ -15,6 +15,7 @@ import { Cart } from '@/app/components/Cart';
 import { CheckoutPage } from '@/app/components/CheckoutPage';
 import { Footer } from '@/app/components/Footer';
 import { FavoritesPage } from '@/app/components/FavoritesPage';
+import { LoginModal } from '@/app/components/LoginModal';
 import { Product, products } from '@/app/data/products';
 import { Language, translations } from '@/app/translations';
 
@@ -73,6 +74,10 @@ export default function App() {
     return (saved === 'ar' || saved === 'en') ? saved as Language : 'en';
   });
 
+  // LOGIN MODAL STATE
+  // Whether the login modal is visible (true = open, false = closed)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   // Get translations for current language
   const t = translations[language];
 
@@ -111,6 +116,41 @@ export default function App() {
   // ============================================
   const handleToggleLanguage = () => {
     setLanguage((prev) => prev === 'en' ? 'ar' : 'en');
+  };
+
+  // ============================================
+  // LOGIN FUNCTIONS
+  // ============================================
+  
+  /**
+   * OPEN LOGIN MODAL
+   * Shows the login modal
+   */
+  const handleLoginClick = () => {
+    setIsLoginModalOpen(true);
+  };
+
+  /**
+   * CLOSE LOGIN MODAL
+   * Hides the login modal
+   */
+  const handleLoginClose = () => {
+    setIsLoginModalOpen(false);
+  };
+
+  /**
+   * HANDLE LOGIN SUBMISSION
+   * Processes login form submission
+   * In a real app, this would make an API call
+   */
+  const handleLogin = (email: string, password: string) => {
+    console.log('Login attempt:', { email, password });
+    // In a real app, you would:
+    // 1. Make API call to authenticate
+    // 2. Store auth token
+    // 3. Update user state
+    // For now, just close the modal
+    setIsLoginModalOpen(false);
   };
 
   // ============================================
@@ -375,6 +415,7 @@ export default function App() {
           language={language}
           onToggleLanguage={handleToggleLanguage}
           t={t.header}
+          onLoginClick={handleLoginClick}
         />
       )}
 
@@ -455,6 +496,17 @@ export default function App() {
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onCheckout={handleCheckout}
+      />
+
+      {/* ============================================ */}
+      {/* LOGIN MODAL */}
+      {/* Modal overlay that appears in center of screen */}
+      {/* Always rendered, visibility controlled by isLoginModalOpen */}
+      {/* ============================================ */}
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={handleLoginClose}
+        onLogin={handleLogin}
       />
     </div>
   );

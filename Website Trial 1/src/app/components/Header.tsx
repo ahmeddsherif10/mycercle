@@ -4,7 +4,7 @@
 // Main navigation header that appears at the top of every page
 // Includes: Logo, Search Bar, Cart/Favorites icons, Navigation menu
 
-import { ShoppingBag, Search, Menu, X, Heart, Moon, Sun, Globe } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X, Heart, Moon, Sun, Globe, User } from 'lucide-react';
 import { useState } from 'react';
 import { Language } from '@/app/translations';
 
@@ -23,9 +23,10 @@ interface HeaderProps {
   language: Language;             // Current language
   onToggleLanguage: () => void;   // Function to toggle language
   t: any;                         // Translations object
+  onLoginClick?: () => void;      // Function to open login modal
 }
 
-export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _currentView, onViewChange, onSearch, favoritesCount, onFavoritesClick, isDarkMode, onToggleDarkMode, language: _language, onToggleLanguage, t }: HeaderProps) {
+export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _currentView, onViewChange, onSearch, favoritesCount, onFavoritesClick, isDarkMode, onToggleDarkMode, language: _language, onToggleLanguage, t, onLoginClick }: HeaderProps) {
   // ============================================
   // STATE MANAGEMENT
   // ============================================
@@ -113,12 +114,22 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
         </form>
 
         {/* ============================================ */}
-        {/* LANGUAGE, DARK MODE, FAVORITES & CART ICONS */}
+        {/* LOGIN, LANGUAGE, DARK MODE, FAVORITES & CART ICONS */}
         {/* Icons size: 20px */}
         {/* Badge size: w-5 h-5 (20px x 20px) */}
         {/* Badge font: text-xs (12px) */}
         {/* ============================================ */}
         <div className="flex items-center gap-3 md:gap-4">
+          
+          {/* LOGIN BUTTON */}
+          <button 
+            className="flex items-center gap-1 hover:opacity-70 transition-opacity"
+            onClick={onLoginClick}
+            title="Login"
+          >
+            <User size={20} />
+            <span className="text-sm hidden md:inline">Login</span>
+          </button>
           
           {/* LANGUAGE TOGGLE BUTTON */}
           <button 
