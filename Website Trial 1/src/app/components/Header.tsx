@@ -4,8 +4,9 @@
 // Main navigation header that appears at the top of every page
 // Includes: Logo, Search Bar, Cart/Favorites icons, Navigation menu
 
-import { ShoppingBag, Search, Menu, X, Heart } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X, Heart, Moon, Sun, Globe } from 'lucide-react';
 import { useState } from 'react';
+import { Language } from '@/app/translations';
 
 // Props (data passed to this component from App.tsx)
 interface HeaderProps {
@@ -17,17 +18,27 @@ interface HeaderProps {
   onSearch?: (query: string) => void;    // Function to handle search
   favoritesCount: number;         // Number of favorited items
   onFavoritesClick: () => void;   // Function to open favorites page
+  isDarkMode: boolean;            // Whether dark mode is enabled
+  onToggleDarkMode: () => void;   // Function to toggle dark mode
+  language: Language;             // Current language
+  onToggleLanguage: () => void;   // Function to toggle language
+  t: any;                         // Translations object
 }
 
-export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _currentView, onViewChange, onSearch, favoritesCount, onFavoritesClick }: HeaderProps) {
+export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _currentView, onViewChange, onSearch, favoritesCount, onFavoritesClick, isDarkMode, onToggleDarkMode, language: _language, onToggleLanguage, t }: HeaderProps) {
   // ============================================
   // STATE MANAGEMENT
   // ============================================
   const [isMenuOpen, setIsMenuOpen] = useState(false);  // Mobile menu open/closed
   const [searchQuery, setSearchQuery] = useState('');   // Search input value
 
-  // Category buttons in navigation
-  const categories = ['Women', 'Kids', 'Designer', 'More'];
+  // Category buttons in navigation - using translations
+  const categories = [
+    { key: 'Women', label: t.women },
+    { key: 'Kids', label: t.kids },
+    { key: 'Designer', label: t.designer },
+    { key: 'More', label: t.more }
+  ];
 
   // ============================================
   // SEARCH HANDLER
@@ -42,7 +53,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-black/10">
+    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-black/10 dark:border-white/10">
       {/* ============================================ */}
       {/* TOP BAR - Logo, Search, Cart/Favorites icons */}
       {/* ============================================ */}
@@ -83,8 +94,8 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search for brands, items, categories..."
-            className="flex-1 border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-black"
+            placeholder={t.search}
+            className="flex-1 border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm focus:outline-none focus:border-black dark:focus:border-white bg-white dark:bg-gray-800 dark:text-white"
           />
           
           {/* Search Submit Button */}
@@ -97,23 +108,42 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
             className="bg-black text-white px-6 py-2 hover:bg-gray-800 transition-colors text-sm flex items-center gap-2"
           >
             <Search size={16} />
-            <span className="hidden lg:inline">SEARCH</span>
+            <span className="hidden lg:inline">{t.searchButton}</span>
           </button>
         </form>
 
         {/* ============================================ */}
-        {/* FAVORITES & CART ICONS */}
+        {/* LANGUAGE, DARK MODE, FAVORITES & CART ICONS */}
         {/* Icons size: 20px */}
         {/* Badge size: w-5 h-5 (20px x 20px) */}
         {/* Badge font: text-xs (12px) */}
         {/* ============================================ */}
         <div className="flex items-center gap-3 md:gap-4">
           
+          {/* LANGUAGE TOGGLE BUTTON */}
+          <button 
+            className="flex items-center gap-1 hover:opacity-70 transition-opacity"
+            onClick={onToggleLanguage}
+            title="Change Language"
+          >
+            <Globe size={20} />
+            <span className="text-sm hidden md:inline">{_language === 'en' ? 'EN' : 'AR'}</span>
+          </button>
+          
+          {/* DARK MODE TOGGLE BUTTON */}
+          <button 
+            className="relative hover:opacity-70 transition-opacity"
+            onClick={onToggleDarkMode}
+            title={isDarkMode ? t.lightMode : t.darkMode}
+          >
+            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          
           {/* FAVORITES BUTTON (Heart icon) */}
           <button 
             className="relative hover:opacity-70 transition-opacity"
             onClick={onFavoritesClick}
-            title="Favorites"
+            title={t.favorites}
           >
             <Heart size={20} />
             {/* Counter badge - shows number of favorited items */}
@@ -128,7 +158,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
           <button 
             className="relative hover:opacity-70 transition-opacity"
             onClick={onCartClick}
-            title="Shopping Cart"
+            title={t.cart}
           >
             <ShoppingBag size={20} />
             {/* Counter badge - shows number of items in cart */}
@@ -146,7 +176,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
       {/* Only shows on mobile screens */}
       {/* Appears below the top bar */}
       {/* ============================================ */}
-      <div className="md:hidden border-t border-black/10">
+      <div className="md:hidden border-t border-black/10 dark:border-white/10">
         <div className="container mx-auto px-4 py-3">
           <form onSubmit={handleSearch} className="flex gap-2">
             {/* Mobile Search Input - smaller padding than desktop */}
@@ -156,8 +186,8 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search..."
-              className="flex-1 border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:border-black"
+              placeholder={t.searchMobile}
+              className="flex-1 border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:outline-none focus:border-black dark:focus:border-white bg-white dark:bg-gray-800 dark:text-white"
             />
             
             {/* Mobile Search Button - icon only, no text */}
@@ -178,7 +208,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
       {/* Mobile: Shows/hides based on hamburger menu */}
       {/* Desktop: Always visible */}
       {/* ============================================ */}
-      <nav className={`${isMenuOpen ? 'block' : 'hidden'} md:block border-t border-black/10`}>
+      <nav className={`${isMenuOpen ? 'block' : 'hidden'} md:block border-t border-black/10 dark:border-white/10`}>
         <div className="container mx-auto px-4">
           
           {/* Navigation Links */}
@@ -194,22 +224,22 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
                 onClick={() => onViewChange('shop')}
                 className="block w-full md:w-auto text-left md:text-center py-3 md:py-0 hover:opacity-70 transition-opacity border-b md:border-b-0 border-black/5"
               >
-                SHOP
+                {t.shop}
               </button>
             </li>
             
             {/* CATEGORY BUTTONS (Women, Kids, Designer, More) */}
             {categories.map((category) => (
-              <li key={category}>
+              <li key={category.key}>
                 <button
                   onClick={() => {
                     onViewChange('shop');
-                    onCategoryClick(category);
+                    onCategoryClick(category.key);
                     setIsMenuOpen(false);  // Close mobile menu after click
                   }}
                   className="block w-full md:w-auto text-left md:text-center py-3 md:py-0 hover:opacity-70 transition-opacity border-b md:border-b-0 border-black/5"
                 >
-                  {category.toUpperCase()}
+                  {category.label}
                 </button>
               </li>
             ))}
@@ -224,7 +254,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
                 }}
                 className="block w-full md:w-auto text-left md:text-center py-3 md:py-0 font-medium hover:opacity-70 transition-opacity"
               >
-                SELL YOUR CLOTHES
+                {t.sellYourClothes}
               </button>
             </li>
           </ul>

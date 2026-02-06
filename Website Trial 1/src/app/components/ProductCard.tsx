@@ -16,6 +16,7 @@ interface ProductCardProps {
   onToggleFavorite?: (product: Product) => void; // Function to add/remove from favorites
   isFavorite?: boolean;                          // Whether product is favorited
   onProductClick?: (product: Product) => void;   // Function to open product detail modal
+  t: any;                                        // Translations object
 }
 
 export function ProductCard({ 
@@ -23,7 +24,8 @@ export function ProductCard({
   onAddToCart, 
   onToggleFavorite, 
   isFavorite = false,
-  onProductClick 
+  onProductClick,
+  t
 }: ProductCardProps) {
 
   return (
@@ -87,7 +89,7 @@ export function ProductCard({
         {/* ============================================ */}
         {product.originalPrice && (
           <div className="absolute top-3 left-3 bg-black text-white px-3 py-1 text-xs">
-            SAVE {Math.round((1 - product.price / product.originalPrice) * 100)}%
+            {t.save || 'SAVE'} {Math.round((1 - product.price / product.originalPrice) * 100)}%
           </div>
         )}
         
@@ -107,7 +109,7 @@ export function ProductCard({
           }}
           className="absolute bottom-0 left-0 right-0 bg-white text-black py-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-black hover:text-white"
         >
-          ADD TO BAG
+          {t.addToCart}
         </button>
       </div>
 
@@ -137,7 +139,7 @@ export function ProductCard({
           {/* Currency "EGP": text-xs (12px) - 40% smaller than price number */}
           {/* Math.round removes decimals */}
           <p className="font-medium">
-            <span className="text-xs">EGP</span> {Math.round(product.price)}
+            <span className="text-xs">{t.currency}</span> {Math.round(product.price)}
           </p>
           
           {/* ORIGINAL PRICE (strikethrough) - Only shows if product is on sale */}
@@ -147,7 +149,7 @@ export function ProductCard({
           {/* Currency "EGP": text-[10px] (10px) - even smaller for strikethrough */}
           {product.originalPrice && (
             <p className="text-sm text-gray-400 line-through">
-              <span className="text-[10px]">EGP</span> {Math.round(product.originalPrice)}
+              <span className="text-[10px]">{t.currency}</span> {Math.round(product.originalPrice)}
             </p>
           )}
         </div>

@@ -2,20 +2,24 @@ import { ImageWithFallback } from '@/app/components/ui/ImageWithFallback';
 
 interface CategoryGridProps {
   onCategoryClick: (category: string) => void;
+  t: any; // Translations object
 }
 
-export function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
+export function CategoryGrid({ onCategoryClick, t }: CategoryGridProps) {
   const categories = [
     {
-      name: 'Women',
+      key: 'Women',
+      name: t.women,
       image: '/categories/women.jpg',
     },
     {
-      name: 'Kids',
+      key: 'Kids',
+      name: t.kids,
       image: '/categories/kids.jpg',
     },
     {
-      name: 'Designer',
+      key: 'Designer',
+      name: t.designer,
       image: '/categories/designer.jpg',
     },
   ];
@@ -24,13 +28,13 @@ export function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
     <section className="py-8 px-4">
       <div className="container mx-auto">
         <h2 className="text-3xl md:text-4xl font-light text-center mb-8 tracking-wide">
-          SHOP BY CATEGORY
+          {t.title}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {categories.map((category) => (
             <button
-              key={category.name}
-              onClick={() => onCategoryClick(category.name)}
+              key={category.key}
+              onClick={() => onCategoryClick(category.key)}
               className="group relative h-96 overflow-hidden bg-gray-100 hover:opacity-90 transition-opacity"
             >
               <ImageWithFallback
@@ -41,7 +45,7 @@ export function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-all duration-300" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <h3 className="text-white text-3xl md:text-4xl font-medium tracking-widest drop-shadow-lg">
-                  {category.name.toUpperCase()}
+                  {category.name}
                 </h3>
               </div>
             </button>

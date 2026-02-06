@@ -19,6 +19,8 @@ interface ShopPageProps {
   onToggleFavorite: (product: Product) => void; // Function to favorite/unfavorite product
   favoriteIds: Set<string>;                     // Set of favorited product IDs
   onBuyNow?: (product: Product) => void;        // Function for "Buy Now" button (add to cart + go to checkout)
+  t: any;                                       // Translations object
+  productT: any;                                // Product translations object
 }
 
 export function ShopPage({ 
@@ -27,13 +29,25 @@ export function ShopPage({
   searchQuery = '',
   onToggleFavorite,
   favoriteIds,
-  onBuyNow 
+  onBuyNow,
+  t,
+  productT
 }: ShopPageProps) {
   // ============================================
   // STATE MANAGEMENT
   // ============================================
   // Tracks which product modal is open (null = no modal open)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // Helper function to get translated category name
+  const getCategoryName = (category: string) => {
+    if (category === 'All') return t.all;
+    if (category === 'Women') return t.women;
+    if (category === 'Kids') return t.kids;
+    if (category === 'Designer') return t.designer;
+    if (category === 'More') return t.more;
+    return category;
+  };
 
   // ============================================
   // PRODUCT FILTERING LOGIC
@@ -80,7 +94,7 @@ export function ShopPage({
           {/* Spacing: tracking-wide (extra letter spacing) */}
           {/* Margin bottom: mb-4 (16px) */}
           <h1 className="text-3xl md:text-4xl font-light tracking-wide mb-4">
-            {selectedCategory === 'All' ? 'ALL ITEMS' : selectedCategory.toUpperCase()}
+            {getCategoryName(selectedCategory)}
           </h1>
           
           {/* ============================================ */}
@@ -92,7 +106,7 @@ export function ShopPage({
             {/* ITEM COUNT TEXT */}
             {/* Color: text-gray-600 (medium gray) */}
             {/* Shows number of products after filtering */}
-            <p className="text-gray-600">{filteredProducts.length} items</p>
+            <p className="text-gray-600">{filteredProducts.length} {t.items || 'items'}</p>
             
             {/* FILTER & SORT BUTTON */}
             {/* Border: 1px black solid */}
@@ -103,7 +117,7 @@ export function ShopPage({
             {/* Note: Currently just visual, filtering logic not implemented */}
             <button className="flex items-center gap-2 border border-black px-3 py-1.5 text-sm hover:bg-black hover:text-white transition-colors">
               <Filter size={16} />
-              <span>FILTER & SORT</span>
+              <span>{t.filter || 'FILTER & SORT'}</span>
             </button>
           </div>
         </div>
@@ -126,6 +140,7 @@ export function ShopPage({
                 onToggleFavorite={onToggleFavorite}
                 isFavorite={favoriteIds.has(product.id)}  // Check if product is in favorites Set
                 onProductClick={setSelectedProduct}        // Opens product modal
+                t={productT}
               />
             ))}
           </div>
@@ -135,7 +150,8 @@ export function ShopPage({
           // Centered text with vertical padding
           // ============================================
           <div className="text-center py-16">
-            <p className="text-gray-600">No items found in this category.</p>
+            <p className="text-gray-600">{t.noProducts}</p>
+            <p className="text-gray-500 text-sm mt-2">{t.tryDifferent}</p>
           </div>
         )}
       </div>
@@ -154,6 +170,7 @@ export function ShopPage({
           onToggleFavorite={onToggleFavorite}
           isFavorite={favoriteIds.has(selectedProduct.id)}
           onBuyNow={onBuyNow}
+          t={productT}
         />
       )}
     </div>

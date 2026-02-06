@@ -5,7 +5,7 @@
 // Controls: Page navigation, cart, favorites, search, category filtering
 // All data flows through this component to child components
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from '@/app/components/Header';
 import { Hero } from '@/app/components/Hero';
 import { CategoryGrid } from '@/app/components/CategoryGrid';
@@ -16,6 +16,7 @@ import { CheckoutPage } from '@/app/components/CheckoutPage';
 import { Footer } from '@/app/components/Footer';
 import { FavoritesPage } from '@/app/components/FavoritesPage';
 import { Product, products } from '@/app/data/products';
+import { Language, translations } from '@/app/translations';
 
 // CartItem extends Product to add quantity tracking
 interface CartItem extends Product {
@@ -56,6 +57,61 @@ export default function App() {
   // Set of product IDs that user has favorited
   // Using Set for fast lookup: O(1) instead of O(n) with array
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+
+  // DARK MODE STATE
+  // Tracks whether dark mode is enabled, persisted in localStorage
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    // Check localStorage for saved preference, default to false (light mode)
+    const saved = localStorage.getItem('darkMode');
+    return saved === 'true';
+  });
+
+  // LANGUAGE STATE
+  // Tracks current language (English or Arabic), persisted in localStorage
+  const [language, setLanguage] = useState<Language>(() => {
+    const saved = localStorage.getItem('language');
+    return (saved === 'ar' || saved === 'en') ? saved as Language : 'en';
+  });
+
+  // Get translations for current language
+  const t = translations[language];
+
+  // ============================================
+  // DARK MODE EFFECT
+  // ============================================
+  // Applies dark mode class to document and saves preference
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('darkMode', String(isDarkMode));
+  }, [isDarkMode]);
+
+  // ============================================
+  // LANGUAGE EFFECT
+  // ============================================
+  // Sets document direction (RTL for Arabic) and saves preference
+  useEffect(() => {
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+    localStorage.setItem('language', language);
+  }, [language]);
+
+  // ============================================
+  // DARK MODE TOGGLE FUNCTION
+  // ============================================
+  const handleToggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
+  // ============================================
+  // LANGUAGE TOGGLE FUNCTION
+  // ============================================
+  const handleToggleLanguage = () => {
+    setLanguage((prev) => prev === 'en' ? 'ar' : 'en');
+  };
 
   // ============================================
   // CART MANAGEMENT FUNCTIONS
@@ -314,6 +370,11 @@ export default function App() {
           onSearch={handleSearch}
           onFavoritesClick={handleFavoritesClick}
           favoritesCount={favoriteIds.size}  // Number of favorited items
+          isDarkMode={isDarkMode}
+          onToggleDarkMode={handleToggleDarkMode}
+          language={language}
+          onToggleLanguage={handleToggleLanguage}
+          t={t.header}
         />
       )}
 
@@ -329,8 +390,9 @@ export default function App() {
             <Hero 
               onShopClick={() => setCurrentView('shop')} 
               onSellClick={() => setCurrentView('sell')}
+              t={t.hero}
             />
-            <CategoryGrid onCategoryClick={handleCategoryClick} />
+            <CategoryGrid onCategoryClick={handleCategoryClick} t={t.categories} />
           </>
         )}
 
@@ -343,6 +405,8 @@ export default function App() {
             onToggleFavorite={handleToggleFavorite}
             favoriteIds={favoriteIds}
             onBuyNow={handleBuyNow}
+            t={t.shop}
+            productT={t.product}
           />
         )}
 
@@ -377,7 +441,7 @@ export default function App() {
       {/* ============================================ */}
       {/* FOOTER - Hidden on checkout page */}
       {/* ============================================ */}
-      {currentView !== 'checkout' && <Footer />}
+      {currentView !== 'checkout' && <Footer t={t.footer} />}
 
       {/* ============================================ */}
       {/* CART SIDEBAR */}

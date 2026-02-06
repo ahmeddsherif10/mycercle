@@ -3,9 +3,10 @@ import { ImageWithFallback } from '@/app/components/ui/ImageWithFallback';
 interface HeroProps {
   onShopClick: () => void;
   onSellClick: () => void;
+  t: any; // Translations object
 }
 
-export function Hero({ onShopClick, onSellClick }: HeroProps) {
+export function Hero({ onShopClick, onSellClick, t }: HeroProps) {
   return (
     <section className="relative h-[50vh] md:h-[60vh] overflow-hidden">
       <div className="relative h-[50vh] md:h-[60vh] bg-black text-white overflow-hidden">
@@ -27,23 +28,23 @@ export function Hero({ onShopClick, onSellClick }: HeroProps) {
         
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-wide mb-4">
-            The Cercle of Good Style
+            {t.title}
           </h2>
           <p className="text-lg md:text-xl font-light mb-8 max-w-2xl">
-            Pre-loved designer fashion, curated for the conscious consumer
+            {t.subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={onSellClick}
               className="bg-white text-black px-8 py-3 hover:bg-gray-100 transition-all duration-300"
             >
-              SELL WITH US
+              {t.sellButton}
             </button>
             <button
               onClick={onShopClick}
               className="bg-black text-white px-8 py-3 border border-white hover:bg-white hover:text-black transition-all duration-300"
             >
-              SHOP NOW
+              {t.shopNow}
             </button>
           </div>
         </div>
