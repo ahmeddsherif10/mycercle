@@ -26,8 +26,8 @@ export function Hero({ onShopClick, onSellClick, t }: HeroProps) {
           />
         </div>
         
-        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-wide mb-4">
+        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-wide mb-4 drop-shadow-lg">
             {t.title}
           </h2>
           <p className="text-lg md:text-xl font-light mb-8 max-w-2xl">

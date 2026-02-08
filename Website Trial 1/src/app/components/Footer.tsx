@@ -6,8 +6,8 @@ interface FooterProps {
 
 export function Footer({ t }: FooterProps) {
   return (
-    <footer className="bg-black dark:bg-gray-900 text-white py-12 mt-16">
-      <div className="container mx-auto px-4">
+    <footer className="bg-black dark:bg-gray-900 text-white py-10 mt-12">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xl font-light tracking-wider mb-4">MY CERCLE</h3>

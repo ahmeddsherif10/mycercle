@@ -7,7 +7,7 @@
 import { ShoppingBag, Search, Menu, X, Heart, Moon, Sun, Globe, User, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { Language } from '@/app/translations';
-import { MegaMenu } from '@/app/components/MegaMenu';
+import { CategoryMegaMenu } from '@/app/components/CategoryMegaMenu';
 
 // Props (data passed to this component from App.tsx)
 interface HeaderProps {
@@ -33,7 +33,8 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
   // ============================================
   const [isMenuOpen, setIsMenuOpen] = useState(false);  // Mobile menu open/closed
   const [searchQuery, setSearchQuery] = useState('');   // Search input value
-  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false); // Mega menu open/closed
+  const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null); // Which category mega menu is open
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false); // Search bar expanded state
 
   // Category buttons in navigation - using translations
   const categories = [
@@ -53,6 +54,20 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
     if (onSearch && searchQuery.trim()) {
       onSearch(searchQuery);
       onViewChange('shop');  // Navigate to shop page with search results
+      setIsSearchExpanded(false); // Collapse search after submit
+      setSearchQuery(''); // Clear search input
+    }
+  };
+
+  // Handle search icon click
+  const handleSearchIconClick = () => {
+    setIsSearchExpanded(true);
+  };
+
+  // Handle clicking outside search to collapse
+  const handleSearchBlur = () => {
+    if (!searchQuery.trim()) {
+      setIsSearchExpanded(false);
     }
   };
 
@@ -61,7 +76,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
       {/* ============================================ */}
       {/* TOP BAR - Logo, Search, Cart/Favorites icons */}
       {/* ============================================ */}
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-4">
+      <div className="w-full px-6 py-3 flex items-center gap-6">
         
         {/* MOBILE MENU BUTTON (hamburger icon) - Only shows on mobile */}
         <button 
@@ -78,51 +93,61 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
         {/* Spacing: tracking-wider (extra letter spacing) */}
         {/* ============================================ */}
         <h1
-          className="text-xl md:text-3xl font-bold tracking-wider cursor-pointer whitespace-nowrap"
+          className="text-[32px] font-bold tracking-wider cursor-pointer whitespace-nowrap order-first"
           onClick={() => onViewChange('home')}
         >
-          MY CERCLE
+          MYCERCLE
         </h1>
 
         {/* ============================================ */}
-        {/* DESKTOP SEARCH BAR */}
-        {/* Hidden on mobile (hidden md:flex) */}
-        {/* Max width: 640px (max-w-xl) */}
-        {/* Takes remaining space (flex-1) */}
+        {/* RIGHT SIDE CONTAINER - SEARCH BAR + ICONS */}
         {/* ============================================ */}
-        <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl mx-4">
-          {/* Search Input Field */}
-          {/* Padding: px-4 py-2 (16px horizontal, 8px vertical) */}
-          {/* Font: text-sm (14px) */}
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t.header.search}
-            className="flex-1 border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm focus:outline-none focus:border-black dark:focus:border-white bg-white dark:bg-gray-800 dark:text-white"
-          />
-          
-          {/* Search Submit Button */}
-          {/* Background: black (bg-black) */}
-          {/* Padding: px-6 py-2 (24px horizontal, 8px vertical) */}
-          {/* Font: text-sm (14px) */}
-          {/* Icon size: 16px */}
-          <button
-            type="submit"
-            className="bg-black text-white px-6 py-2 hover:bg-gray-800 transition-colors text-sm flex items-center gap-2"
-          >
-            <Search size={16} />
-            <span className="hidden lg:inline">{t.header.searchButton}</span>
-          </button>
-        </form>
+        <div className="flex items-center gap-4 ml-auto">
+          {/* ============================================ */}
+          {/* ANIMATED SEARCH */}
+          {/* Hidden on mobile (hidden md:block) */}
+          {/* ============================================ */}
+          <div className="hidden md:block relative">
+            {!isSearchExpanded ? (
+              /* Search Icon - Collapsed State */
+              <button
+                onClick={handleSearchIconClick}
+                className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all duration-200"
+                title="Search"
+              >
+                <Search size={18} className="text-gray-600 dark:text-gray-400" />
+              </button>
+            ) : (
+              /* Expanded Search Form */
+              <form onSubmit={handleSearch} className="flex items-center">
+                <div className="relative animate-in slide-in-from-right-5 duration-1000 ease-out">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onBlur={handleSearchBlur}
+                    placeholder="Search…"
+                    autoFocus
+                    className="w-80 pl-4 pr-12 py-2.5 bg-gray-50 dark:bg-gray-800 border-0 rounded-full text-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all duration-1000 ease-out"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-colors"
+                  >
+                    <Search size={16} className="text-gray-600 dark:text-gray-400" />
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
 
-        {/* ============================================ */}
-        {/* LOGIN, LANGUAGE, DARK MODE, FAVORITES & CART ICONS */}
-        {/* Icons size: 20px */}
-        {/* Badge size: w-5 h-5 (20px x 20px) */}
-        {/* Badge font: text-xs (12px) */}
-        {/* ============================================ */}
-        <div className="flex items-center gap-3 md:gap-4">
+          {/* ============================================ */}
+          {/* LOGIN, LANGUAGE, DARK MODE, FAVORITES & CART ICONS */}
+          {/* Icons size: 20px */}
+          {/* Badge size: w-5 h-5 (20px x 20px) */}
+          {/* Badge font: text-xs (12px) */}
+          {/* ============================================ */}
+          <div className="flex items-center gap-4 md:gap-5">
           
           {/* LOGIN BUTTON */}
           <button 
@@ -130,8 +155,8 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
             onClick={onLoginClick}
             title="Login"
           >
-            <User size={20} />
-            <span className="text-sm hidden md:inline">Login</span>
+            <User size={18} />
+            <span className="text-xs hidden md:inline">Login</span>
           </button>
           
           {/* LANGUAGE TOGGLE BUTTON */}
@@ -140,8 +165,8 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
             onClick={onToggleLanguage}
             title="Change Language"
           >
-            <Globe size={20} />
-            <span className="text-sm hidden md:inline">{_language === 'en' ? 'EN' : 'AR'}</span>
+            <Globe size={18} />
+            <span className="text-xs hidden md:inline">{_language === 'en' ? 'EN' : 'AR'}</span>
           </button>
           
           {/* DARK MODE TOGGLE BUTTON */}
@@ -150,7 +175,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
             onClick={onToggleDarkMode}
             title={isDarkMode ? t.header.lightMode : t.header.darkMode}
           >
-            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
           
           {/* FAVORITES BUTTON (Heart icon) */}
@@ -159,7 +184,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
             onClick={onFavoritesClick}
             title={t.header.favorites}
           >
-            <Heart size={20} />
+            <Heart size={18} />
             {/* Counter badge - shows number of favorited items */}
             {favoritesCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
@@ -174,7 +199,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
             onClick={onCartClick}
             title={t.header.cart}
           >
-            <ShoppingBag size={20} />
+            <ShoppingBag size={18} />
             {/* Counter badge - shows number of items in cart */}
             {cartCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-black text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
@@ -182,6 +207,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
               </span>
             )}
           </button>
+          </div>
         </div>
       </div>
 
@@ -224,7 +250,6 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
       {/* ============================================ */}
       <nav
         className={`${isMenuOpen ? 'block' : 'hidden'} md:block border-t border-black/10 dark:border-white/10 relative`}
-        onMouseLeave={() => setIsMegaMenuOpen(false)}
       >
         <div className="container mx-auto px-4">
 
@@ -235,34 +260,28 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
           {/* Padding: 0 on mobile, py-3 (12px vertical) on desktop */}
           <ul className="flex flex-col md:flex-row md:justify-center md:items-center gap-0 md:gap-8 py-0 md:py-3">
 
-            {/* SHOP BUTTON */}
-            <li>
-              <button
-                onClick={() => onViewChange('shop')}
-                onMouseEnter={() => setIsMegaMenuOpen(false)}
-                className="flex items-center gap-1 w-full md:w-auto text-left md:text-center py-3 md:py-0 hover:opacity-70 transition-opacity border-b md:border-b-0 border-black/5"
-              >
-                {t.header.shop}
-              </button>
-            </li>
-
             {/* CATEGORY BUTTONS (Women, Kids, Designer, More) with animated arrows */}
             {categories.map((category) => (
-              <li key={category.key}>
+              <li 
+                key={category.key}
+                onMouseEnter={() => {
+                  console.log('Setting active mega menu to:', category.key);
+                  setActiveMegaMenu(category.key);
+                }}
+              >
                 <button
                   onClick={() => {
                     onViewChange('shop');
                     onCategoryClick(category.key);
                     setIsMenuOpen(false);  // Close mobile menu after click
                   }}
-                  onMouseEnter={() => setIsMegaMenuOpen(true)}
-                  className="flex items-center gap-1 w-full md:w-auto text-left md:text-center py-3 md:py-0 hover:opacity-70 transition-opacity border-b md:border-b-0 border-black/5"
+                  className="flex items-center gap-1 w-full md:w-auto text-left md:text-center py-3 md:py-2 px-2 hover:opacity-70 transition-all duration-300 border-b md:border-b-0 border-black/5 relative group"
                 >
                   {category.label}
-                  <ChevronDown
-                    size={16}
-                    className={`transition-transform duration-300 ${isMegaMenuOpen ? 'rotate-180' : 'rotate-0'}`}
-                  />
+                  {/* Chic underline animation - center expand */}
+                  <span className={`absolute bottom-0 left-1/2 h-0.5 bg-black dark:bg-white transition-all duration-300 transform -translate-x-1/2 ${
+                    activeMegaMenu === category.key ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}></span>
                 </button>
               </li>
             ))}
@@ -275,7 +294,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
                   onViewChange('sell');
                   setIsMenuOpen(false);  // Close mobile menu after click
                 }}
-                onMouseEnter={() => setIsMegaMenuOpen(false)}
+                onMouseEnter={() => setActiveMegaMenu(null)}
                 className="block w-full md:w-auto text-left md:text-center py-3 md:py-0 font-medium hover:opacity-70 transition-opacity"
               >
                 {t.header.sellYourClothes}
@@ -284,14 +303,18 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
           </ul>
         </div>
 
-        {/* MEGA MENU - Unified menu showing all categories */}
+        {/* CATEGORY MEGA MENUS - Individual mega menu for each category */}
         <div className="hidden md:block">
-          <MegaMenu
-            isOpen={isMegaMenuOpen}
-            onClose={() => setIsMegaMenuOpen(false)}
-            t={t}
-            language={_language}
-          />
+          {categories.map((category) => (
+            <CategoryMegaMenu
+              key={category.key}
+              isOpen={activeMegaMenu === category.key}
+              onClose={() => setActiveMegaMenu(null)}
+              category={category.key}
+              t={t}
+              language={_language}
+            />
+          ))}
         </div>
       </nav>
     </header>
