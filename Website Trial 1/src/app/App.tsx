@@ -253,8 +253,8 @@ export default function App() {
     if (query.trim() && currentView !== 'shop') {
       setCurrentView('shop');
       setSelectedCategory('All');
-  };
     }
+  };
 
   /**
    * VIEW CHANGE HANDLER

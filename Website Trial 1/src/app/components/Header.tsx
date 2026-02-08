@@ -4,7 +4,7 @@
 // Main navigation header that appears at the top of every page
 // Includes: Logo, Search Bar, Cart/Favorites icons, Navigation menu
 
-import { ShoppingBag, Search, Menu, X, Heart, Moon, Sun, Globe, User } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X, Heart, Moon, Sun, Globe, User, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { Language } from '@/app/translations';
 import { MegaMenu } from '@/app/components/MegaMenu';
@@ -33,14 +33,15 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
   // ============================================
   const [isMenuOpen, setIsMenuOpen] = useState(false);  // Mobile menu open/closed
   const [searchQuery, setSearchQuery] = useState('');   // Search input value
-  const [openMegaMenu, setOpenMegaMenu] = useState<string | null>(null); // Which mega menu is open
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false); // Mega menu open/closed
 
   // Category buttons in navigation - using translations
   const categories = [
     { key: 'Women', label: t.women },
     { key: 'Kids', label: t.kids },
     { key: 'Designer', label: t.designer },
-    { key: 'More', label: t.more }
+    { key: 'Edits', label: 'Edits' },
+    { key: 'Vintage', label: 'Vintage' }
   ];
 
   // ============================================
@@ -221,27 +222,31 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
       {/* Mobile: Shows/hides based on hamburger menu */}
       {/* Desktop: Always visible */}
       {/* ============================================ */}
-      <nav className={`${isMenuOpen ? 'block' : 'hidden'} md:block border-t border-black/10 dark:border-white/10`}>
+      <nav
+        className={`${isMenuOpen ? 'block' : 'hidden'} md:block border-t border-black/10 dark:border-white/10 relative`}
+        onMouseLeave={() => setIsMegaMenuOpen(false)}
+      >
         <div className="container mx-auto px-4">
-          
+
           {/* Navigation Links */}
           {/* Mobile: Vertical list (flex-col) */}
           {/* Desktop: Horizontal list (flex-row), centered */}
           {/* Gap: 0 on mobile, 32px (gap-8) on desktop */}
           {/* Padding: 0 on mobile, py-3 (12px vertical) on desktop */}
           <ul className="flex flex-col md:flex-row md:justify-center md:items-center gap-0 md:gap-8 py-0 md:py-3">
-            
+
             {/* SHOP BUTTON */}
             <li>
               <button
                 onClick={() => onViewChange('shop')}
-                className="block w-full md:w-auto text-left md:text-center py-3 md:py-0 hover:opacity-70 transition-opacity border-b md:border-b-0 border-black/5"
+                onMouseEnter={() => setIsMegaMenuOpen(false)}
+                className="flex items-center gap-1 w-full md:w-auto text-left md:text-center py-3 md:py-0 hover:opacity-70 transition-opacity border-b md:border-b-0 border-black/5"
               >
                 {t.shop}
               </button>
             </li>
-            
-            {/* CATEGORY BUTTONS (Women, Kids, Designer, More) */}
+
+            {/* CATEGORY BUTTONS (Women, Kids, Designer, More) with animated arrows */}
             {categories.map((category) => (
               <li key={category.key}>
                 <button
@@ -250,13 +255,18 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
                     onCategoryClick(category.key);
                     setIsMenuOpen(false);  // Close mobile menu after click
                   }}
-                  className="block w-full md:w-auto text-left md:text-center py-3 md:py-0 hover:opacity-70 transition-opacity border-b md:border-b-0 border-black/5"
+                  onMouseEnter={() => setIsMegaMenuOpen(true)}
+                  className="flex items-center gap-1 w-full md:w-auto text-left md:text-center py-3 md:py-0 hover:opacity-70 transition-opacity border-b md:border-b-0 border-black/5"
                 >
                   {category.label}
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform duration-300 ${isMegaMenuOpen ? 'rotate-180' : 'rotate-0'}`}
+                  />
                 </button>
               </li>
             ))}
-            
+
             {/* SELL YOUR CLOTHES BUTTON */}
             {/* Font weight: font-medium (500) - slightly bolder */}
             <li>
@@ -265,12 +275,22 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
                   onViewChange('sell');
                   setIsMenuOpen(false);  // Close mobile menu after click
                 }}
+                onMouseEnter={() => setIsMegaMenuOpen(false)}
                 className="block w-full md:w-auto text-left md:text-center py-3 md:py-0 font-medium hover:opacity-70 transition-opacity"
               >
                 {t.sellYourClothes}
               </button>
             </li>
           </ul>
+        </div>
+
+        {/* MEGA MENU - Unified menu showing all categories */}
+        <div className="hidden md:block">
+          <MegaMenu
+            isOpen={isMegaMenuOpen}
+            onClose={() => setIsMegaMenuOpen(false)}
+            t={t}
+          />
         </div>
       </nav>
     </header>

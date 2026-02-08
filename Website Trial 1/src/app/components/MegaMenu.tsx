@@ -1,123 +1,126 @@
 // ============================================
-// MEGA MENU COMPONENT
+// UNIFIED MEGA MENU COMPONENT WITH GLASSMORPHISM
 // ============================================
-// Hover-activated dropdown menu with glassmorphism effect
-// Shows category breakdowns for WOMEN, KIDS, DESIGNER, EDITS, VINTAGE
+// Hover-activated mega menu showing all categories at once
 
 interface MegaMenuProps {
-  category: string;
   isOpen: boolean;
   onClose: () => void;
-  t: any; // Translations
+  t: any; // Translations object
 }
 
-export function MegaMenu({ category, isOpen, onClose, t }: MegaMenuProps) {
+export function MegaMenu({ isOpen, onClose, t }: MegaMenuProps) {
   if (!isOpen) return null;
 
-  // Menu content for each category
-  const menuContent = {
-    Women: {
-      title: t?.women || 'WOMEN',
+  // Unified menu structure - all categories displayed at once
+  const menuContent = [
+    {
+      title: 'WOMEN',
       columns: [
         {
-          title: t?.clothing || 'CLOTHING',
+          title: 'CLOTHING',
           items: ['Tops', 'Pants', 'Dresses', 'Skirts', 'Jackets & Coats', 'Suits & Sets', 'Shorts']
         },
         {
-          title: t?.accessories || 'ACCESSORIES',
+          title: 'ACCESSORIES',
           items: ['Jewelry', 'Belts', 'Scarves', 'Clutches', 'Bags', 'Shoes']
         }
       ]
     },
-    Kids: {
-      title: t?.kids || 'KIDS',
+    {
+      title: 'KIDS',
       columns: [
         {
-          title: t?.girls || 'GIRLS',
-          items: ['0-24m', '2T-5T', '6-12y', 'Tops', 'Pants', 'Dresses', 'Skirts', 'Jackets', 'Shorts', 'Swimwear', 'Activewear']
+          title: 'GIRLS',
+          items: ['0-24m', '2T-5T', '6-12y', 'Dresses', 'Skirts', 'Tops', 'Pants', 'Jackets', 'Shorts', 'Swimwear', 'Activewear']
         },
         {
-          title: t?.boys || 'BOYS',
-          items: ['0-3m', '3-6m', '12-18m', '18-24m', '2T-5T', '6-12y', 'Tops', 'Pants', 'Denim', 'Jackets', 'Shorts', 'Swimwear', 'Activewear']
-        },
-        {
-          title: t?.baby || 'BABY',
-          items: ['Newborn', '0-24 months', 'Tops', 'Pants', 'Jackets', 'Rompers', 'Onesies', 'Toys']
+          title: 'BOYS & BABY',
+          items: ['Newborn', '0-24m', '2T-5T', '6-12y', 'Tops', 'Pants', 'Denim', 'Jackets', 'Shorts', 'Rompers', 'Onesies', 'Swimwear', 'Activewear', 'Toys']
         }
       ]
     },
-    Designer: {
-      title: t?.designer || 'DESIGNER',
+    {
+      title: 'DESIGNER',
       columns: [
         {
-          title: t?.productType || 'PRODUCT TYPE',
+          title: 'PRODUCT TYPE',
           items: ['Handbags', 'Ready-to-Wear', 'Accessories', 'Belts', 'Scarves', 'Wallets']
         },
         {
-          title: t?.brands || 'BROWSE BY BRAND',
+          title: 'BROWSE BY BRAND',
           items: ['Louis Vuitton', 'Chanel', 'Gucci', 'Prada', 'Hermès', 'Dior', 'Fendi', 'Valentino']
         }
       ]
     },
-    More: {
-      title: t?.more || 'MORE',
+    {
+      title: 'EDITS',
       columns: [
         {
-          title: t?.edits || 'EDITS',
+          title: 'CURATED COLLECTIONS',
           items: ['Summer Essentials', 'Workwear Edit', 'Weekend Vibes', 'Holiday Party', 'New This Month']
-        },
+        }
+      ]
+    },
+    {
+      title: 'VINTAGE',
+      columns: [
         {
-          title: t?.vintage || 'VINTAGE',
+          title: 'CATEGORIES',
           items: ['Tops', 'Pants', 'Denim', 'Jackets & Coats', 'Skirts', 'Shorts', 'Accessories', 'Bags']
         }
       ]
     }
-  };
-
-  const currentMenu = menuContent[category as keyof typeof menuContent];
-  if (!currentMenu) return null;
+  ];
 
   return (
     <>
-      {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/20 z-40"
+      {/* Semi-transparent backdrop */}
+      <div
+        className="fixed inset-0 z-40"
         onClick={onClose}
-        onMouseEnter={onClose}
       />
-      
-      {/* Mega Menu with Glassmorphism */}
-      <div 
-        className="absolute left-0 right-0 top-full z-50 animate-fadeIn"
-        onMouseLeave={onClose}
+
+      {/* Mega menu dropdown - dangling from navigation bar */}
+      <div
+        className="absolute left-0 right-0 top-full z-50 fadeIn"
       >
-        <div className="container mx-auto px-4 py-8">
-          {/* Glassmorphism Container */}
-          <div className="glassmorphism-menu rounded-2xl p-8 shadow-2xl">
-            {/* Menu Title */}
-            <h3 className="text-2xl font-light tracking-wider mb-6 border-b border-white/20 pb-4">
-              {currentMenu.title}
-            </h3>
-            
-            {/* Columns Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {currentMenu.columns.map((column, idx) => (
-                <div key={idx} className="space-y-4">
-                  {/* Column Title */}
-                  <h4 className="font-medium text-sm tracking-wider mb-3 text-black/80 dark:text-white/90">
-                    {column.title}
-                  </h4>
-                  
-                  {/* Column Items */}
-                  <ul className="space-y-2">
-                    {column.items.map((item, itemIdx) => (
-                      <li key={itemIdx}>
-                        <button className="text-sm text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white transition-colors duration-200 text-left w-full">
-                          {item}
-                        </button>
-                      </li>
+        <div className="glass-menu p-8 shadow-2xl max-h-[70vh] overflow-y-auto">
+          <div className="container mx-auto">
+            {/* Main Grid - All Categories */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10">
+              {menuContent.map((category, categoryIdx) => (
+                <div
+                  key={categoryIdx}
+                  className={`space-y-4 ${category.title === 'KIDS' ? 'lg:col-span-2' : ''}`}
+                >
+                  {/* Category Title */}
+                  <h2 className="text-xl font-light tracking-wider mb-3 pb-3 border-b border-black/10 dark:border-white/10 text-black dark:text-white">
+                    {category.title}
+                  </h2>
+
+                  {/* Columns within category */}
+                  <div className={category.title === 'KIDS' ? 'grid grid-cols-2 gap-6' : 'space-y-4'}>
+                    {category.columns.map((column, columnIdx) => (
+                      <div key={columnIdx} className="space-y-2">
+                        {/* Column Title */}
+                        <h3 className="text-sm font-medium tracking-wider uppercase text-black/80 dark:text-white/90">
+                          {column.title}
+                        </h3>
+
+                        {/* Column Items */}
+                        <ul className="space-y-1.5">
+                          {column.items.map((item, itemIdx) => (
+                            <li key={itemIdx}>
+                              <button className="text-sm text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:opacity-100 transition-all duration-200 text-left w-full">
+                                {item}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               ))}
             </div>
@@ -126,26 +129,35 @@ export function MegaMenu({ category, isOpen, onClose, t }: MegaMenuProps) {
       </div>
 
       <style>{`
-        .glassmorphism-menu {
+        /* Glassmorphism Effect - Light Mode */
+        .glass-menu {
           background: rgba(255, 255, 255, 0.85);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 
-            0 8px 32px 0 rgba(31, 38, 135, 0.15),
-            inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
-            inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-top: 2px solid rgba(0, 0, 0, 0.1);
+          box-shadow:
+            0 10px 40px 0 rgba(0, 0, 0, 0.1),
+            0 6px 20px 0 rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+            inset 0 -1px 0 0 rgba(255, 255, 255, 0.5);
         }
-        
-        .dark .glassmorphism-menu {
+
+        /* Glassmorphism Effect - Dark Mode */
+        .dark .glass-menu {
           background: rgba(30, 30, 30, 0.85);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          box-shadow: 
-            0 8px 32px 0 rgba(0, 0, 0, 0.4),
-            inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
-            inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-top: 2px solid rgba(255, 255, 255, 0.2);
+          box-shadow:
+            0 10px 40px 0 rgba(0, 0, 0, 0.6),
+            0 6px 20px 0 rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+            inset 0 -1px 0 0 rgba(255, 255, 255, 0.08);
         }
-        
+
+        /* Fade-in animation */
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -156,9 +168,14 @@ export function MegaMenu({ category, isOpen, onClose, t }: MegaMenuProps) {
             transform: translateY(0);
           }
         }
-        
-        .animate-fadeIn {
+
+        .fadeIn {
           animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Smooth hover transitions */
+        .glass-menu button {
+          transition: color 200ms ease, opacity 200ms ease;
         }
       `}</style>
     </>
