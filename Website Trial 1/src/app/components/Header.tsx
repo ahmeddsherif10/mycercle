@@ -37,11 +37,11 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
 
   // Category buttons in navigation - using translations
   const categories = [
-    { key: 'Women', label: t.women },
-    { key: 'Kids', label: t.kids },
-    { key: 'Designer', label: t.designer },
-    { key: 'Edits', label: 'Edits' },
-    { key: 'Vintage', label: 'Vintage' }
+    { key: 'Women', label: t.header.women },
+    { key: 'Kids', label: t.header.kids },
+    { key: 'Designer', label: t.header.designer },
+    { key: 'Edits', label: t.header.edits },
+    { key: 'Vintage', label: t.header.vintage }
   ];
 
   // ============================================
@@ -74,11 +74,11 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
         {/* ============================================ */}
         {/* LOGO "MY CERCLE" */}
         {/* Font: text-xl (20px mobile) / text-3xl (30px desktop) */}
-        {/* Weight: font-light (300) */}
+        {/* Weight: font-bold (700) */}
         {/* Spacing: tracking-wider (extra letter spacing) */}
         {/* ============================================ */}
-        <h1 
-          className="text-xl md:text-3xl font-light tracking-wider cursor-pointer whitespace-nowrap"
+        <h1
+          className="text-xl md:text-3xl font-bold tracking-wider cursor-pointer whitespace-nowrap"
           onClick={() => onViewChange('home')}
         >
           MY CERCLE
@@ -98,7 +98,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t.search}
+            placeholder={t.header.search}
             className="flex-1 border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm focus:outline-none focus:border-black dark:focus:border-white bg-white dark:bg-gray-800 dark:text-white"
           />
           
@@ -112,7 +112,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
             className="bg-black text-white px-6 py-2 hover:bg-gray-800 transition-colors text-sm flex items-center gap-2"
           >
             <Search size={16} />
-            <span className="hidden lg:inline">{t.searchButton}</span>
+            <span className="hidden lg:inline">{t.header.searchButton}</span>
           </button>
         </form>
 
@@ -148,7 +148,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
           <button 
             className="relative hover:opacity-70 transition-opacity"
             onClick={onToggleDarkMode}
-            title={isDarkMode ? t.lightMode : t.darkMode}
+            title={isDarkMode ? t.header.lightMode : t.header.darkMode}
           >
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
@@ -157,7 +157,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
           <button 
             className="relative hover:opacity-70 transition-opacity"
             onClick={onFavoritesClick}
-            title={t.favorites}
+            title={t.header.favorites}
           >
             <Heart size={20} />
             {/* Counter badge - shows number of favorited items */}
@@ -172,7 +172,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
           <button 
             className="relative hover:opacity-70 transition-opacity"
             onClick={onCartClick}
-            title={t.cart}
+            title={t.header.cart}
           >
             <ShoppingBag size={20} />
             {/* Counter badge - shows number of items in cart */}
@@ -200,7 +200,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t.searchMobile}
+              placeholder={t.header.searchMobile}
               className="flex-1 border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:outline-none focus:border-black dark:focus:border-white bg-white dark:bg-gray-800 dark:text-white"
             />
             
@@ -242,7 +242,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
                 onMouseEnter={() => setIsMegaMenuOpen(false)}
                 className="flex items-center gap-1 w-full md:w-auto text-left md:text-center py-3 md:py-0 hover:opacity-70 transition-opacity border-b md:border-b-0 border-black/5"
               >
-                {t.shop}
+                {t.header.shop}
               </button>
             </li>
 
@@ -278,7 +278,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
                 onMouseEnter={() => setIsMegaMenuOpen(false)}
                 className="block w-full md:w-auto text-left md:text-center py-3 md:py-0 font-medium hover:opacity-70 transition-opacity"
               >
-                {t.sellYourClothes}
+                {t.header.sellYourClothes}
               </button>
             </li>
           </ul>
@@ -290,6 +290,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
             isOpen={isMegaMenuOpen}
             onClose={() => setIsMegaMenuOpen(false)}
             t={t}
+            language={_language}
           />
         </div>
       </nav>

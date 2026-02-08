@@ -414,7 +414,7 @@ export default function App() {
           onToggleDarkMode={handleToggleDarkMode}
           language={language}
           onToggleLanguage={handleToggleLanguage}
-          t={t.header}
+          t={t}
           onLoginClick={handleLoginClick}
         />
       )}
