@@ -7,6 +7,7 @@
 import { ShoppingBag, Search, Menu, X, Heart, Moon, Sun, Globe, User } from 'lucide-react';
 import { useState } from 'react';
 import { Language } from '@/app/translations';
+import { MegaMenu } from '@/app/components/MegaMenu';
 
 // Props (data passed to this component from App.tsx)
 interface HeaderProps {
@@ -32,6 +33,7 @@ export function Header({ cartCount, onCartClick, onCategoryClick, currentView: _
   // ============================================
   const [isMenuOpen, setIsMenuOpen] = useState(false);  // Mobile menu open/closed
   const [searchQuery, setSearchQuery] = useState('');   // Search input value
+  const [openMegaMenu, setOpenMegaMenu] = useState<string | null>(null); // Which mega menu is open
 
   // Category buttons in navigation - using translations
   const categories = [
